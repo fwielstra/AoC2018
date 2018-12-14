@@ -67,6 +67,8 @@ func findCommonCharacters(boxIds []string) string {
 				if boxId[i] != comparedBoxId[i] {
 					distances[pair] += 1
 					if distances[pair] > 1 {
+						// this pair is no longer viable; remove.
+						delete(distances, pair)
 						continue Blaat
 					}
 				}
