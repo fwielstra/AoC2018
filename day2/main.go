@@ -47,8 +47,6 @@ func calculateChecksum(boxIds []string) int {
 		}
 	}
 
-	fmt.Printf("totalContainsTwo: %v, totalContainsThree: %v\n", totalContainsTwo, totalContainsThree)
-
 	return totalContainsTwo * totalContainsThree
 }
 
@@ -63,6 +61,12 @@ func findCommonCharacters(boxIds []string) string {
 	Blaat:
 		for _, comparedBoxId := range boxIds {
 			pair := Pair{boxId, comparedBoxId}
+			inversePair := Pair{comparedBoxId, boxId}
+			if _, ok := distances[inversePair]; ok {
+				// this pair has already been checked
+				continue
+			}
+
 			for i := 0; i < len(boxId)-1; i++ {
 				if boxId[i] != comparedBoxId[i] {
 					distances[pair] += 1
@@ -76,34 +80,24 @@ func findCommonCharacters(boxIds []string) string {
 		}
 	}
 
-	var results []string
+	// distances should have length 1 here because we removed the ones with >1 distance
 
-	for pair, distance := range distances {
-		// skip anything with a distance > 1
-		if distance != 1 {
-			continue
-		}
-
-		// if distance is 1, find the common characters
+	for pair := range distances {
+		// assemble the common characters from the pair
 		result := ""
 		for i := range pair.one {
 			if pair.one[i] == pair.other[i] {
 				result += string(pair.one[i])
 			}
 		}
-		results = append(results, result)
+		return result
 	}
-
-	// blunt: just assume there's only one result
-	return results[0]
+	return ""
 }
 
 func readInputFile(filename string) string {
 	dat, err := ioutil.ReadFile(filename)
-	if err != nil {
-		panic(err)
-	}
-
+	check(err)
 	return string(dat)
 }
 
