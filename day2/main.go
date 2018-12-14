@@ -60,10 +60,15 @@ func findCommonCharacters(boxIds []string) string {
 
 	distances := make(map[Pair]int)
 	for _, boxId := range boxIds {
+	Blaat:
 		for _, comparedBoxId := range boxIds {
-			for i := 0; i < len(boxId) - 1; i++ {
+			pair := Pair{boxId, comparedBoxId}
+			for i := 0; i < len(boxId)-1; i++ {
 				if boxId[i] != comparedBoxId[i] {
-					distances[Pair{boxId, comparedBoxId}] += 1
+					distances[pair] += 1
+					if distances[pair] > 1 {
+						continue Blaat
+					}
 				}
 			}
 		}
@@ -86,7 +91,6 @@ func findCommonCharacters(boxIds []string) string {
 		}
 		results = append(results, result)
 	}
-
 
 	// blunt: just assume there's only one result
 	return results[0]
@@ -111,7 +115,6 @@ func cleanInput(input []string) []string {
 	return result
 }
 
-
 func main() {
 	input := readInputFile("input.txt")
 	boxIds := cleanInput(strings.Split(input, "\n"))
@@ -124,7 +127,6 @@ func main() {
 	startFindCommon := time.Now()
 	common := findCommonCharacters(boxIds)
 	logger.Printf("Common ID: %v calculated in %s", common, time.Since(startFindCommon))
-
 
 	fmt.Print(&buf)
 }
