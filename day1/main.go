@@ -28,8 +28,38 @@ func calculateFrequency(deltas []int) int {
 	return result
 }
 
+func contains(haystack []int, needle int) bool {
+	for _, a := range haystack {
+		if a == needle {
+			return true
+		}
+	}
+	return false
+}
+
+func findFirstFrequency(deltas []int) int {
+	var frequenciesReached []int
+	resultFound := false
+	result := 0
+
+	for resultFound == false {
+		for _, delta := range deltas {
+			frequenciesReached = append(frequenciesReached, result)
+
+			result += delta
+
+			if contains(frequenciesReached, result) {
+				resultFound = true
+				break
+			}
+		}
+	}
+
+	return result
+}
+
 func parseInput(input string) []int {
-	var result = []int{}
+	var result []int
 	for _, line := range strings.Split(input, "\n") {
 		if len(line) == 0 {
 			continue
@@ -54,10 +84,14 @@ func readInputFile(filename string) string {
 func main() {
 	logger.Print("AoC day 1")
 	logger.Print("Reading input file...")
+
 	input := readInputFile("input.txt")
 	parsedInput := parseInput(input)
+
 	logger.Printf("Read %d frequency deltas", len(parsedInput))
-	result := calculateFrequency(parsedInput)
-	logger.Printf("Result: %v", result)
+
+	logger.Printf("Result: %v", calculateFrequency(parsedInput))
+	logger.Printf("Result for first frequency found twice: %v", findFirstFrequency(parsedInput))
+
 	fmt.Print(&buf)
 }
