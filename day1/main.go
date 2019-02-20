@@ -23,7 +23,7 @@ func check(err error) {
 func calculateFrequency(deltas []int) int {
 	result := 0
 	for _, delta := range deltas {
-		result += delta
+		result = result + delta
 	}
 	return result
 }
